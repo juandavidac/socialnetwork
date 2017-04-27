@@ -18,9 +18,15 @@ class FriendshipsController < ApplicationController
 
   def accept
     @friendship.accept_friendship
+    @friendship.create_activity key: 'friendship.accepted', owner: @friendship.user, recipient: @friendship.friend
+    @friendship.create_activity key: 'friendship.accepted', owner: @friendship.friend, recipient: @friendship.owner
     respond_to do |format|
       format.html {redirect_to users_path, notice: "Friendship accepted"}
     end
+  end
+
+  def show
+    @activities= PublicActivity::Activity.where(owner_id: @user.id)
   end
 
   private
