@@ -12,15 +12,19 @@ class User < ApplicationRecord
   def request_friendship(friend)
     self.friendships.create(friend: friend)
   end
+
   def active_friends
     self.friendships.where(state: "active").map(&:friend) + self.inverse_friendships.where(state: "active").map(&:user)
   end
+
   def pending_friend_requests_to
     self.friendships.where(state: "pending")
   end
+
   def pending_friend_requests_from
     self.inverse_friendships.where(state: "pending")
   end
+
   def friendship_status(friend)
     friendship = Friendship.where(user_id: [self.id,friend.id], friend_id: [self.id, friend.id])
     unless friendship.any?
@@ -36,5 +40,9 @@ class User < ApplicationRecord
         end
       end
     end
+  end
+
+  def friendship_relation(friend)
+    Friendship.where(user_id: [self.id, friend.id], friend_id: [self.id, friend.id]).first
   end
 end
