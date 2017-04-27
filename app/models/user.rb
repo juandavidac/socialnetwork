@@ -18,11 +18,11 @@ class User < ApplicationRecord
   end
 
   def pending_friend_requests_to
-    self.friendships.where(state: "pending")
+    self.friendships.where(state: "pending").map(&:friend)
   end
 
   def pending_friend_requests_from
-    self.inverse_friendships.where(state: "pending")
+    self.inverse_friendships.where(state: "pending").map(&:user)
   end
 
   def friendship_status(friend)
